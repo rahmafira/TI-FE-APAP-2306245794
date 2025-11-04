@@ -1,6 +1,7 @@
 import type { CommonResponseInterface } from '@/interfaces/common.response.interface';
 import type { Property, PropertyDetail } from '@/interfaces/property.interface';
 import type { CreatePropertyPayload } from '@/interfaces/property.interface';
+import type { UpdatePropertyPayload } from '@/interfaces/property.interface';
 
 import axios from 'axios';
 
@@ -23,5 +24,9 @@ export const PropertyService = {
   createProperty: async (payload: CreatePropertyPayload): Promise<Property> => {
     const response = await apiClient.post<CommonResponseInterface<Property>>('/api/properties', payload);
     return response.data.data;
+  },
+  updateProperty: async (payload: UpdatePropertyPayload): Promise<Property> => {
+        const response = await apiClient.put<CommonResponseInterface<Property>>('/api/properties/update', payload);
+        return response.data.data;
   },
 };

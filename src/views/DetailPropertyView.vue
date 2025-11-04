@@ -52,7 +52,9 @@ onMounted(() => {
             </h1>
             <div v-if="property.activeStatus === 1" class="flex gap-2 flex-shrink-0">
                 <VButton class="text-sm py-2 px-4 bg-green-600 hover:bg-green-700">Add Room</VButton>
-                <VButton class="text-sm py-2 px-4 bg-yellow-500 hover:bg-yellow-600">Update Property</VButton>
+                <RouterLink :to="`/properties/update/${property.propertyId}`">
+                    <VButton class="text-sm py-2 px-4 bg-yellow-500 hover:bg-yellow-600">Update Property</VButton>
+                </RouterLink>
                 <VButton class="text-sm py-2 px-4 bg-red-600 hover:bg-red-700">Delete Property</VButton>
             </div>
           </div>

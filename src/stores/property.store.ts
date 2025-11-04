@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { PropertyService } from '@/services/property.service';
 import type { Property, PropertyDetail } from '@/interfaces/property.interface';
 import type { CreatePropertyPayload } from '@/interfaces/property.interface';
+import type { UpdatePropertyPayload } from '@/interfaces/property.interface';
 import { toast } from 'vue-sonner';
 import { isAxiosError } from 'axios';
 
@@ -72,6 +73,23 @@ export const usePropertyStore = defineStore('property', {
         } else {
           this.error = 'An unexpected error occurred.';
         }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async updateProperty(payload: UpdatePropertyPayload) {
+      const router = (await import('@/router')).default;
+      this.loading = true;
+      this.error = null;
+      try {
+        await PropertyService.updateProperty(payload);
+        toast.success("Property updated successfully!");
+        router.push(`/properties/${payload.propertyId}`); 
+      } catch (e: unknown) {
+        if (isAxiosError(e)) { this.error = e.response?.data?.message || 'Failed to update property.'; } 
+        else { this.error = 'An unexpected error occurred.'; }
         if (this.error) toast.error(this.error);
       } finally {
         this.loading = false;

@@ -17,6 +17,8 @@ export interface RoomTypeDetail {
     name: string;
     description: string;
     price: number;
+    capacity: number;
+    facility: string;
     listRoom: RoomDetail[];
 }
 
@@ -51,4 +53,20 @@ export interface CreatePropertyPayload {
     ownerId: string;
     ownerName: string;
     listRoomType: CreateRoomTypePayload[];
+}
+
+export interface UpdateRoomTypePayload {
+    roomTypeId: string;
+    capacity: number;
+    price: number;
+    description: string;
+    facility: string;
+}
+
+export interface UpdatePropertyPayload {
+    propertyId: string;
+    propertyName: string;
+    address: string;
+    description: string;
+    listRoomType: UpdateRoomTypePayload[];
 }
