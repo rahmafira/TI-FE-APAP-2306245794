@@ -70,3 +70,9 @@ export interface UpdatePropertyPayload {
     description: string;
     listRoomType: UpdateRoomTypePayload[];
 }
+
+export interface PropertyHeader {
+    propertyId: string;
+    propertyName: string;
+    type: number;
+}

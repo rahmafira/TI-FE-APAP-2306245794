@@ -4,6 +4,7 @@ import PropertyView from '@/views/PropertyView.vue';
 import DetailPropertyView from '@/views/DetailPropertyView.vue';
 import CreatePropertyView from '@/views/CreatePropertyView.vue';
 import UpdatePropertyView from '@/views/UpdatePropertyView.vue';
+import AddRoomView from '@/views/AddRoomView.vue'; 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,6 +33,11 @@ const router = createRouter({
       path: '/properties/update/:id', // <-- Tambahkan rute ini
       name: 'update-property',
       component: UpdatePropertyView,
+    },
+    {
+      path: '/properties/updateroom/:id', // <-- Tambahkan rute ini
+      name: 'add-room',
+      component: AddRoomView,
     },
     {
       path: '/bookings',

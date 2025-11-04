@@ -2,6 +2,7 @@ import type { CommonResponseInterface } from '@/interfaces/common.response.inter
 import type { Property, PropertyDetail } from '@/interfaces/property.interface';
 import type { CreatePropertyPayload } from '@/interfaces/property.interface';
 import type { UpdatePropertyPayload } from '@/interfaces/property.interface';
+import type { PropertyHeader, CreateRoomTypePayload } from '@/interfaces/property.interface';
 
 import axios from 'axios';
 
@@ -11,6 +12,11 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+export interface AddRoomTypesPayload {
+    propertyId: string;
+    newRoomTypes: CreateRoomTypePayload[];
+}
 
 export const PropertyService = {
   getAllProperties: async (): Promise<Property[]> => {
@@ -31,5 +37,13 @@ export const PropertyService = {
   },
   deleteProperty: async (id: string): Promise<void> => {
         await apiClient.delete(`/api/properties/delete/${id}`);
+  },
+  getPropertyHeader: async (id: string): Promise<PropertyHeader> => {
+        const response = await apiClient.get<CommonResponseInterface<PropertyHeader>>(`/api/properties/updateroom/${id}`);
+        return response.data.data;
+  },
+    
+  addRoomTypes: async (payload: AddRoomTypesPayload): Promise<void> => {
+        await apiClient.post('/api/properties/updateroom', payload);
   },
 };
