@@ -1,19 +1,23 @@
 import { defineStore } from 'pinia';
 import { PropertyService } from '@/services/property.service';
-import type { Property } from '@/interfaces/property.interface';
+import type { Property, PropertyDetail } from '@/interfaces/property.interface';
 import { toast } from 'vue-sonner';
 import { isAxiosError } from 'axios';
 
 interface PropertyState {
   properties: Property[];
+  currentProperty: PropertyDetail | null; 
   loading: boolean;
+  loadingDetail: boolean; 
   error: string | null;
 }
 
 export const usePropertyStore = defineStore('property', {
   state: (): PropertyState => ({
     properties: [],
+    currentProperty: null,
     loading: false,
+    loadingDetail: false,
     error: null,
   }),
   actions: {
@@ -33,6 +37,23 @@ export const usePropertyStore = defineStore('property', {
         if (this.error) toast.error(this.error);
       } finally {
         this.loading = false;
+      }
+    },
+    async fetchPropertyDetail(id: string) {
+      this.loadingDetail = true;
+      this.error = null;
+      this.currentProperty = null;
+      try {
+        this.currentProperty = await PropertyService.getPropertyDetail(id);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+          this.error = e.response?.data?.message || 'Failed to fetch property detail.';
+        } else {
+          this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loadingDetail = false;
       }
     },
   },

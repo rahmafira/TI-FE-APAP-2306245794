@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 import PropertyView from '@/views/PropertyView.vue';
+import DetailPropertyView from '@/views/DetailPropertyView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,7 +16,11 @@ const router = createRouter({
       name: 'properties',
       component: PropertyView,
     },
-    // Tambahkan rute placeholder ini untuk menghilangkan warning
+    {
+      path: '/properties/:id', 
+      name: 'detail-property',
+      component: DetailPropertyView,
+    },
     {
       path: '/bookings',
       name: 'bookings',

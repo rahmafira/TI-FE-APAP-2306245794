@@ -84,8 +84,10 @@ onMounted(() => {
             </span>
         </template>
 
-        <template #item.action>
-            <VButton class="py-1.5 px-4 text-sm">Detail</VButton>
+        <template v-slot:item.action="{ item }">
+            <RouterLink :to="`/properties/${item.propertyId}`">
+                <VButton class="py-1.5 px-4 text-sm">Detail</VButton>
+            </RouterLink>
         </template>
       </VDataTable>
     </div>

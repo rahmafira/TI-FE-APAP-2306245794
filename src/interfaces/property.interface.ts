@@ -5,3 +5,29 @@ export interface Property {
   activeStatus: number;
   totalRoom: number;
 }
+
+export interface RoomDetail {
+    roomId: string;
+    name: string;
+    availabilityStatus: number;
+}
+
+export interface RoomTypeDetail {
+    roomTypeId: string;
+    name: string;
+    description: string;
+    price: number;
+    listRoom: RoomDetail[];
+}
+
+export interface PropertyDetail extends Property {
+    description: string;
+    income: number;
+    province: number;
+    address: string;
+    ownerName: string;
+    ownerId: string;
+    createdDate: string; 
+    updatedDate: string; 
+    listRoomType: RoomTypeDetail[];
+}

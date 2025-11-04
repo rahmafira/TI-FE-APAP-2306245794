@@ -1,5 +1,6 @@
-import type { Property } from '@/interfaces/property.interface';
 import type { CommonResponseInterface } from '@/interfaces/common.response.interface';
+import type { Property, PropertyDetail } from '@/interfaces/property.interface';
+
 import axios from 'axios';
 
 const apiClient = axios.create({
@@ -12,6 +13,10 @@ const apiClient = axios.create({
 export const PropertyService = {
   getAllProperties: async (): Promise<Property[]> => {
     const response = await apiClient.get<CommonResponseInterface<Property[]>>('/api/properties');
+    return response.data.data;
+  },
+  getPropertyDetail: async (id: string): Promise<PropertyDetail> => {
+    const response = await apiClient.get<CommonResponseInterface<PropertyDetail>>(`/api/properties/${id}`);
     return response.data.data;
   },
 };
