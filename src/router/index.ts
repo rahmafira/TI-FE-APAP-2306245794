@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 import PropertyView from '@/views/PropertyView.vue';
 import DetailPropertyView from '@/views/DetailPropertyView.vue';
+import CreatePropertyView from '@/views/CreatePropertyView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +21,11 @@ const router = createRouter({
       path: '/properties/:id', 
       name: 'detail-property',
       component: DetailPropertyView,
+    },
+    {
+      path: '/properties/create', // <-- Tambahkan rute ini
+      name: 'create-property',
+      component: CreatePropertyView,
     },
     {
       path: '/bookings',

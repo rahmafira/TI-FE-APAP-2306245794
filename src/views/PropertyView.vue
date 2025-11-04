@@ -55,7 +55,9 @@ onMounted(() => {
     <div class="container mx-auto bg-white/90 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div class="flex items-center gap-4 flex-wrap">
-          <VButton>Add Property</VButton>
+          <RouterLink to="/properties/create">
+            <VButton>Add Property</VButton>
+          </RouterLink>
           <VDropdown :button-text="selectedType">
             <a v-for="type in typeOptions" :key="type" @click.prevent="selectedType = type" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ type }}</a>
           </VDropdown>

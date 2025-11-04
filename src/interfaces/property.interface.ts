@@ -31,3 +31,24 @@ export interface PropertyDetail extends Property {
     updatedDate: string; 
     listRoomType: RoomTypeDetail[];
 }
+
+export interface CreateRoomTypePayload {
+    name: string;
+    facility: string;
+    capacity: number;
+    price: number;
+    floor: number;
+    numberOfUnits: number;
+    description: string;
+}
+
+export interface CreatePropertyPayload {
+    propertyName: string;
+    type: number | null;
+    province: number | null;
+    address: string;
+    description: string;
+    ownerId: string;
+    ownerName: string;
+    listRoomType: CreateRoomTypePayload[];
+}

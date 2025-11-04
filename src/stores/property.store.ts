@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { PropertyService } from '@/services/property.service';
 import type { Property, PropertyDetail } from '@/interfaces/property.interface';
+import type { CreatePropertyPayload } from '@/interfaces/property.interface';
 import { toast } from 'vue-sonner';
 import { isAxiosError } from 'axios';
 
@@ -54,6 +55,26 @@ export const usePropertyStore = defineStore('property', {
         if (this.error) toast.error(this.error);
       } finally {
         this.loadingDetail = false;
+      }
+    },
+    async createProperty(payload: CreatePropertyPayload) {
+      const router = (await import('@/router')).default;
+      this.loading = true;
+      this.error = null;
+      try {
+        await PropertyService.createProperty(payload);
+        toast.success("Property created successfully!");
+        await router.push('/properties');
+        this.fetchProperties();
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+          this.error = e.response?.data?.message || 'Failed to create property.';
+        } else {
+          this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loading = false;
       }
     },
   },
