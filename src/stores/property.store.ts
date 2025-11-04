@@ -95,5 +95,17 @@ export const usePropertyStore = defineStore('property', {
         this.loading = false;
       }
     },
+    async deleteProperty(id: string) {
+      this.error = null;
+      try {
+        await PropertyService.deleteProperty(id);
+        toast.success("Property has been deactivated.");
+        await this.fetchPropertyDetail(id);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) { this.error = e.response?.data?.message || 'Failed to deactivate property.'; } 
+        else { this.error = 'An unexpected error occurred.'; }
+        if (this.error) toast.error(this.error);
+      }
+    },
   },
 });

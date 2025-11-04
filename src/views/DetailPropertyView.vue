@@ -3,6 +3,7 @@ import { onMounted, ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { usePropertyStore } from '@/stores/property.store';
 import VButton from '@/components/common/VButton.vue';
+import VConfirmationModal from '@/components/common/VConfirmationModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -36,6 +37,16 @@ onMounted(() => {
         propertyStore.fetchPropertyDetail(propertyId);
     }
 });
+
+const showDeleteModal = ref(false);
+
+const handleDelete = () => {
+    if (property.value) {
+        propertyStore.deleteProperty(property.value.propertyId);
+    }
+    showDeleteModal.value = false;
+};
+
 </script>
 
 <template>
@@ -55,7 +66,7 @@ onMounted(() => {
                 <RouterLink :to="`/properties/update/${property.propertyId}`">
                     <VButton class="text-sm py-2 px-4 bg-yellow-500 hover:bg-yellow-600">Update Property</VButton>
                 </RouterLink>
-                <VButton class="text-sm py-2 px-4 bg-red-600 hover:bg-red-700">Delete Property</VButton>
+                <VButton @click="showDeleteModal = true" class="bg-red-600 hover:bg-red-700">Delete Property</VButton>
             </div>
           </div>
           <span v-if="property.activeStatus === 1" class="mt-1 inline-block bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Active</span>
@@ -144,5 +155,12 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    <VConfirmationModal 
+      :show="showDeleteModal" 
+      title="Delete Property?" 
+      message="This action cannot be undone."
+      @confirm="handleDelete" 
+      @cancel="showDeleteModal = false" 
+    />
   </main>
 </template>

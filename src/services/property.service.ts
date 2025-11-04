@@ -29,4 +29,7 @@ export const PropertyService = {
         const response = await apiClient.put<CommonResponseInterface<Property>>('/api/properties/update', payload);
         return response.data.data;
   },
+  deleteProperty: async (id: string): Promise<void> => {
+        await apiClient.delete(`/api/properties/delete/${id}`);
+  },
 };
