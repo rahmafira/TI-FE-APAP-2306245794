@@ -1,10 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
-import PropertyView from '@/views/PropertyView.vue';
-import DetailPropertyView from '@/views/DetailPropertyView.vue';
-import CreatePropertyView from '@/views/CreatePropertyView.vue';
-import UpdatePropertyView from '@/views/UpdatePropertyView.vue';
+import PropertyView from '@/views/property/PropertyView.vue';
+import DetailPropertyView from '@/views/property/DetailPropertyView.vue';
+import CreatePropertyView from '@/views/property/CreatePropertyView.vue';
+import UpdatePropertyView from '@/views/property/UpdatePropertyView.vue';
 import AddRoomView from '@/views/AddRoomView.vue'; 
+import BookingView from '@/views/BookingView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,14 +41,14 @@ const router = createRouter({
       component: AddRoomView,
     },
     {
-      path: '/bookings',
+      path: '/bookings', 
       name: 'bookings',
-      component: () => import('@/views/PropertyView.vue'), 
+      component: BookingView,
     },
     {
       path: '/statistic',
       name: 'statistic',
-      component: () => import('@/views/PropertyView.vue'), 
+      component: () => import('@/views/property/PropertyView.vue'), 
     },
   ],
 });
