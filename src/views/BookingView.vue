@@ -5,6 +5,7 @@ import VButton from '@/components/common/VButton.vue';
 import VDataTable from '@/components/common/VDataTable.vue';
 import VDropdown from '@/components/common/VDropdown.vue';
 import VInput from '@/components/common/VInput.vue';
+import { RouterLink } from 'vue-router'; 
 
 const bookingStore = useBookingStore();
 
@@ -36,24 +37,31 @@ const getStatusInfo = (status: number) => {
 };
 
 const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('id-ID');
+    if (!dateString) return 'N/A';
+    return new Date(dateString).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' });
 };
 
 const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(value);
+    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
 };
 
 const filteredBookings = computed(() => {
-    return bookingStore.bookings.filter(booking => {
-        const matchesSearch = 
-            booking.propertyName.toLowerCase().includes(searchTerm.value.toLowerCase()) ||
-            booking.roomName.toLowerCase().includes(searchTerm.value.toLowerCase());
-        
-        const statusText = getStatusInfo(booking.status).text;
-        const matchesStatus = selectedStatus.value === 'All Status' || statusText === selectedStatus.value;
-        
-        return matchesSearch && matchesStatus;
-    });
+    if (!bookingStore.bookings || !Array.isArray(bookingStore.bookings)) {
+        return [];
+    }
+
+    return bookingStore.bookings
+        .filter(booking => booking) 
+        .filter(booking => {
+            const matchesSearch = 
+                (booking.propertyName || '').toLowerCase().includes(searchTerm.value.toLowerCase()) ||
+                (booking.roomName || '').toLowerCase().includes(searchTerm.value.toLowerCase());
+            
+            const statusText = getStatusInfo(booking.status).text;
+            const matchesStatus = selectedStatus.value === 'All Status' || statusText === selectedStatus.value;
+            
+            return matchesSearch && matchesStatus;
+        });
 });
 
 onMounted(() => {
@@ -79,16 +87,18 @@ onMounted(() => {
       <div v-if="bookingStore.loading" class="text-center py-10 text-gray-500">Loading Bookings...</div>
       <div v-else-if="bookingStore.error" class="text-center py-10 text-red-500">{{ bookingStore.error }}</div>
       <VDataTable v-else :headers="headers" :items="filteredBookings">
-        <template #item.checkIn="{ item }"><span>{{ formatDate(item.checkIn) }}</span></template>
-        <template #item.checkOut="{ item }"><span>{{ formatDate(item.checkOut) }}</span></template>
-        <template #item.totalPrice="{ item }"><span>{{ formatCurrency(item.totalPrice) }}</span></template>
-        <template #item.status="{ item }">
-            <span :class="[getStatusInfo(item.status).color, 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full']">
-                {{ getStatusInfo(item.status).text }}
+        <template v-slot:item.checkIn="{ item }"><span>{{ formatDate(item.checkIn as string) }}</span></template>
+        <template v-slot:item.checkOut="{ item }"><span>{{ formatDate(item.checkOut as string) }}</span></template>
+        <template v-slot:item.totalPrice="{ item }"><span>{{ formatCurrency(item.totalPrice as number) }}</span></template>
+        <template v-slot:item.status="{ item }">
+            <span :class="[getStatusInfo(item.status as number).color, 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full']">
+                {{ getStatusInfo(item.status as number).text }}
             </span>
         </template>
-        <template #item.action>
-            <VButton class="py-1.5 px-4 text-sm">Detail</VButton>
+        <template v-slot:item.action="{ item }">
+            <RouterLink :to="`/bookings/${item.bookingId}`">
+                <VButton class="py-1.5 px-4 text-sm">Detail</VButton>
+            </RouterLink>
         </template>
       </VDataTable>
     </div>

@@ -32,7 +32,7 @@ defineProps({
                 <tr v-if="items.length === 0">
                     <td :colspan="headers.length" class="px-6 py-10 text-center text-gray-500">No data available to display.</td>
                 </tr>
-                <tr v-for="(item, index) in items" :key="index" class="hover:bg-blue-50/50 transition-colors">
+                <tr v-for="item in items" :key="(item.bookingId || item.propertyId || item.id) as string" class="hover:bg-blue-50/50 transition-colors">
                     <td v-for="header in headers" :key="header.value" class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">
                         <slot :name="`item.${header.value}`" :item="item">
                             {{ item[header.value] }}
