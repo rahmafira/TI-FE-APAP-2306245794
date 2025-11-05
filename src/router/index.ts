@@ -25,31 +25,29 @@ const router = createRouter({
       component: DetailPropertyView,
     },
     {
-      path: '/properties/create', // <-- Tambahkan rute ini
+      path: '/properties/create', 
       name: 'create-property',
       component: CreatePropertyView,
     },
     {
-      path: '/properties/update/:id', // <-- Tambahkan rute ini
+      path: '/properties/update/:id',
       name: 'update-property',
       component: UpdatePropertyView,
     },
     {
-      path: '/properties/updateroom/:id', // <-- Tambahkan rute ini
+      path: '/properties/updateroom/:id', 
       name: 'add-room',
       component: AddRoomView,
     },
     {
       path: '/bookings',
       name: 'bookings',
-      // Komponennya bisa dibuat nanti
-      component: () => import('@/views/PropertyView.vue'), // Sementara arahkan ke halaman yang ada
+      component: () => import('@/views/PropertyView.vue'), 
     },
     {
       path: '/statistic',
       name: 'statistic',
-      // Komponennya bisa dibuat nanti
-      component: () => import('@/views/PropertyView.vue'), // Sementara arahkan ke halaman yang ada
+      component: () => import('@/views/PropertyView.vue'), 
     },
   ],
 });

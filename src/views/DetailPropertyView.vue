@@ -4,6 +4,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { usePropertyStore } from '@/stores/property.store';
 import VButton from '@/components/common/VButton.vue';
 import VConfirmationModal from '@/components/common/VConfirmationModal.vue';
+import VMaintenanceModal from '@/components/common/VMaintenanceModal.vue';
+import type { RoomDetail } from '@/interfaces/property.interface';
 
 const route = useRoute();
 const router = useRouter();
@@ -45,6 +47,24 @@ const handleDelete = () => {
         propertyStore.deleteProperty(property.value.propertyId);
     }
     showDeleteModal.value = false;
+};
+
+const showMaintenanceModal = ref(false);
+const selectedRoom = ref<RoomDetail | null>(null);
+
+const openMaintenanceModal = (room: RoomDetail) => {
+    selectedRoom.value = room;
+    showMaintenanceModal.value = true;
+};
+
+const handleSaveMaintenance = (payload: { maintenanceStart: string, maintenanceEnd: string }) => {
+    if (selectedRoom.value) {
+        propertyStore.scheduleMaintenance({
+            roomId: selectedRoom.value.roomId,
+            ...payload
+        });
+    }
+    showMaintenanceModal.value = false;
 };
 
 </script>
@@ -143,7 +163,7 @@ const handleDelete = () => {
                                 </td>
                                 <td class="py-2 px-3 flex gap-2">
                                     <VButton class="text-xs py-1.5 px-4" :disabled="room.availabilityStatus !== 1">Book</VButton>
-                                    <VButton class="text-xs py-1.5 px-4 bg-yellow-500 hover:bg-yellow-600" :disabled="room.availabilityStatus !== 1">Maintenance</VButton>
+                                    <VButton @click="openMaintenanceModal(room)" class="text-xs py-1 px-3 bg-yellow-500 hover:bg-yellow-600" :disabled="room.availabilityStatus !== 1">Maintenance</VButton>
                                 </td>
                             </tr>
                         </tbody>
@@ -163,6 +183,13 @@ const handleDelete = () => {
       message="This action cannot be undone."
       @confirm="handleDelete" 
       @cancel="showDeleteModal = false" 
+    />
+    <VMaintenanceModal
+        v-if="selectedRoom"
+        :show="showMaintenanceModal"
+        :room-name="selectedRoom.name"
+        @close="showMaintenanceModal = false"
+        @save="handleSaveMaintenance"
     />
   </main>
 </template>

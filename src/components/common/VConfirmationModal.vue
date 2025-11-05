@@ -18,11 +18,6 @@ const emit = defineEmits(['confirm', 'cancel']);
             leave-from-class="opacity-100"
             leave-to-class="opacity-0"
         >
-            <!-- 
-              PERUBAHAN KRITIS DI SINI:
-              Semua kelas background (bg-black, bg-gray-900, bg-opacity-*) DIHAPUS.
-              Div ini sekarang hanya berfungsi sebagai container transparan untuk memusatkan modal.
-            -->
             <div v-if="props.show" class="fixed inset-0 z-50 flex items-center justify-center">
                 <transition
                     enter-active-class="transition ease-out duration-300"
@@ -32,7 +27,6 @@ const emit = defineEmits(['confirm', 'cancel']);
                     leave-from-class="opacity-100 translate-y-0 sm:scale-100"
                     leave-to-class="opacity-0 translate-y-4 sm:scale-95"
                 >
-                    <!-- Kotak dialog modalnya saja, dengan shadow agar menonjol -->
                     <div v-if="props.show" class="bg-white rounded-lg shadow-2xl max-w-sm w-full p-6 text-center mx-4 border">
                         <h3 class="text-lg font-bold text-gray-800">
                             {{ props.title || 'Delete Property?' }}

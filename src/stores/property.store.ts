@@ -1,5 +1,7 @@
 import { defineStore } from 'pinia';
 import { PropertyService, type AddRoomTypesPayload } from '@/services/property.service';
+import { RoomService } from '@/services/room.service';
+import type { ScheduleMaintenancePayload } from '@/interfaces/property.interface';
 import type { 
     Property, 
     PropertyDetail, 
@@ -13,7 +15,7 @@ import { isAxiosError } from 'axios';
 interface PropertyState {
   properties: Property[];
   currentProperty: PropertyDetail | null;
-  currentPropertyHeader: PropertyHeader | null; // Pastikan ini ada
+  currentPropertyHeader: PropertyHeader | null;
   loading: boolean;
   loadingDetail: boolean;
   error: string | null;
@@ -23,13 +25,12 @@ export const usePropertyStore = defineStore('property', {
   state: (): PropertyState => ({
     properties: [],
     currentProperty: null,
-    currentPropertyHeader: null, // Inisialisasi state
+    currentPropertyHeader: null, 
     loading: false,
     loadingDetail: false,
     error: null,
   }),
   actions: {
-    // --- (fetchProperties, fetchPropertyDetail, createProperty, updateProperty, deleteProperty tidak berubah) ---
     async fetchProperties() {
       this.loading = true;
       this.error = null;
@@ -103,15 +104,13 @@ export const usePropertyStore = defineStore('property', {
         if (this.error) toast.error(this.error);
       }
     },
-    
-    // --- PERBAIKAN DI DUA ACTION DI BAWAH INI ---
     async fetchPropertyHeader(id: string) {
       this.loadingDetail = true;
       this.currentPropertyHeader = null;
       this.error = null;
       try {
         this.currentPropertyHeader = await PropertyService.getPropertyHeader(id);
-      } catch (e: unknown) { // Ganti 'any' dengan 'unknown'
+      } catch (e: unknown) { 
         if (isAxiosError(e)) {
           this.error = e.response?.data?.message || 'Failed to fetch property header.';
         } else {
@@ -122,22 +121,43 @@ export const usePropertyStore = defineStore('property', {
         this.loadingDetail = false;
       }
     },
-
     async addRoomTypes(payload: AddRoomTypesPayload) {
-      const router = (await import('@/router')).default; // Import router secara dinamis
+      const router = (await import('@/router')).default; 
       this.loading = true;
       this.error = null;
       try {
         await PropertyService.addRoomTypes(payload);
         toast.success("Room types added successfully!");
-        router.push(`/properties/${payload.propertyId}`); // Gunakan router yang sudah di-import
-      } catch (e: unknown) { // Ganti 'any' dengan 'unknown'
+        router.push(`/properties/${payload.propertyId}`); 
+      } catch (e: unknown) { 
         if (isAxiosError(e)) {
           this.error = e.response?.data?.message || 'Failed to add room types.';
         } else {
           this.error = 'An unexpected error occurred.';
         }
         if (this.error) toast.error(this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async scheduleMaintenance(payload: ScheduleMaintenancePayload) {
+      this.loading = true;
+      this.error = null;
+      try {
+        await RoomService.scheduleMaintenance(payload);
+        toast.success("Maintenance schedule added successfully!");
+        if (this.currentProperty) {
+            await this.fetchPropertyDetail(this.currentProperty.propertyId);
+        }
+      } catch (e: unknown) { 
+        if (isAxiosError(e)) {
+          this.error = e.response?.data?.message || 'Failed to add maintenance schedule.';
+        } else {
+          this.error = 'An unexpected error occurred while scheduling maintenance.';
+        }
+        if (this.error) {
+            toast.error(this.error);
+        }
       } finally {
         this.loading = false;
       }
