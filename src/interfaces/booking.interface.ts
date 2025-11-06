@@ -9,16 +9,25 @@ export interface Booking {
 }
 
 export interface BookingDetail extends Booking {
+    bookingId: string;
+    propertyName: string;
+    roomName: string;
+    roomId: string; 
+    checkInDate: string; 
+    checkOutDate: string; 
+    totalPrice: number;
+    status: number; 
     customerId: string;
     customerName: string;
     customerEmail: string;
     customerPhone: string;
+    capacity: number
     totalDays: number;
     isBreakfast: boolean;
     extraPay: number;
     refund: number;
-    createdDate: string;
-    updatedAt: string;
+    createdDate: string; 
+    updatedAt: string; 
 }
 
 export interface CreateBookingPayload {
@@ -59,4 +68,22 @@ export interface BookingSelectionProperty {
 
 export interface BookingSelectionData {
     properties: BookingSelectionProperty[];
+}
+
+export interface UpdateBookingPayload {
+    bookingId: string;
+    roomId: string;
+    checkInDate: string;
+    checkOutDate: string;
+    customerId: string;
+    customerName: string;
+    customerEmail: string;
+    customerPhone: string;
+    isBreakfast: boolean;
+    capacity: number;
+}
+
+export interface UpdateBookingForm {
+    currentBooking: BookingDetail;
+    selectionData: BookingSelectionData;
 }

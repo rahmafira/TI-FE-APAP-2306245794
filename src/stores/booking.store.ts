@@ -3,6 +3,7 @@ import { BookingService } from '@/services/booking.service';
 import type { Booking } from '@/interfaces/booking.interface';
 import type { BookingDetail } from '@/interfaces/booking.interface';
 import type { CreateBookingPayload, PrefilledBookingData, BookingSelectionData } from '@/interfaces/booking.interface';
+import type { UpdateBookingPayload, UpdateBookingForm } from '@/interfaces/booking.interface';
 import { toast } from 'vue-sonner';
 import { isAxiosError } from 'axios';
 
@@ -11,6 +12,7 @@ interface BookingState {
   currentBooking: BookingDetail | null;
   prefilledData: PrefilledBookingData | null;
   selectionData: BookingSelectionData | null;
+  updateFormData: UpdateBookingForm | null;
   loading: boolean;
   loadingDetail: boolean;
   error: string | null;
@@ -22,6 +24,7 @@ export const useBookingStore = defineStore('booking', {
     currentBooking: null, 
     prefilledData: null, 
     selectionData: null,
+    updateFormData: null,
     loading: false, 
     loadingDetail: false, 
     error: null,
@@ -87,6 +90,42 @@ export const useBookingStore = defineStore('booking', {
       } catch (e: unknown) {
         const message = isAxiosError(e) ? (e.response?.data?.message || "Failed to create booking.") : "An unexpected error occurred.";
         toast.error(message);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async fetchBookingForUpdate(id: string) {
+      this.loadingDetail = true;
+      this.error = null;
+      try {
+        this.updateFormData = await BookingService.getBookingForUpdate(id);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+            this.error = e.response?.data?.message || 'Failed to fetch data for update.';
+        } else {
+            this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loadingDetail = false;
+      }
+    },
+
+    async updateBooking(payload: UpdateBookingPayload) {
+      const router = (await import('@/router')).default;
+      this.loading = true;
+      this.error = null;
+      try {
+        await BookingService.updateBooking(payload);
+        toast.success("Booking updated successfully!");
+        router.push(`/bookings/${payload.bookingId}`);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+            this.error = e.response?.data?.message || 'Failed to update booking.';
+        } else {
+            this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
       } finally {
         this.loading = false;
       }

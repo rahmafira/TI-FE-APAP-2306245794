@@ -8,6 +8,7 @@ import AddRoomView from '@/views/AddRoomView.vue';
 import BookingView from '@/views/BookingView.vue';
 import DetailBookingView from '@/views/DetailBookingView.vue';
 import CreateBookingView from '@/views/CreateBookingView.vue';
+import UpdateBookingView from '@/views/UpdateBookingView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,7 +58,13 @@ const router = createRouter({
       name: 'create-booking',
       component: CreateBookingView,
       props: true
-  },
+    },
+    {
+    path: '/bookings/update/:id',
+    name: 'update-booking',
+    component: UpdateBookingView,
+    props: true,
+    },
     {
       path: '/statistic',
       name: 'statistic',

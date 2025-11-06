@@ -57,7 +57,9 @@ onMounted(() => {
             </div>
             <div class="flex gap-2">
                 <VButton v-if="canPay" class="bg-green-600 hover:bg-green-700">Pay</VButton>
-                <VButton v-if="canUpdate" class="bg-yellow-500 hover:bg-yellow-600">Update</VButton>
+                <RouterLink v-if="canUpdate" :to="`/bookings/update/${booking.bookingId}`">
+                    <VButton class="bg-yellow-500 hover:bg-yellow-600">Update</VButton>
+                </RouterLink>
                 <VButton v-if="canRefund" class="bg-blue-600 hover:bg-blue-700">Refund</VButton>
                 <VButton v-if="canCancel" class="bg-red-600 hover:bg-red-700">Cancel</VButton>
             </div>
