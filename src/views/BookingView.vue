@@ -74,7 +74,9 @@ onMounted(() => {
     <div class="container mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
         <div class="flex items-center gap-4 flex-wrap">
-          <VButton>Add Booking</VButton>
+          <template>
+            <RouterLink to="/bookings/create"><VButton>Add Booking</VButton></RouterLink>
+          </template>
           <VDropdown :button-text="selectedStatus">
             <a v-for="status in statusOptions" :key="status" @click.prevent="selectedStatus = status" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ status }}</a>
           </VDropdown>

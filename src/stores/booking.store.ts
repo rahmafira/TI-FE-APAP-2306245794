@@ -2,12 +2,15 @@ import { defineStore } from 'pinia';
 import { BookingService } from '@/services/booking.service';
 import type { Booking } from '@/interfaces/booking.interface';
 import type { BookingDetail } from '@/interfaces/booking.interface';
+import type { CreateBookingPayload, PrefilledBookingData, BookingSelectionData } from '@/interfaces/booking.interface';
 import { toast } from 'vue-sonner';
 import { isAxiosError } from 'axios';
 
 interface BookingState {
   bookings: Booking[];
-  currentBooking: BookingDetail | null; 
+  currentBooking: BookingDetail | null;
+  prefilledData: PrefilledBookingData | null;
+  selectionData: BookingSelectionData | null;
   loading: boolean;
   loadingDetail: boolean;
   error: string | null;
@@ -15,10 +18,12 @@ interface BookingState {
 
 export const useBookingStore = defineStore('booking', {
   state: (): BookingState => ({
-    bookings: [],
-    currentBooking: null,
-    loading: false,
-    loadingDetail: false,
+    bookings: [], 
+    currentBooking: null, 
+    prefilledData: null, 
+    selectionData: null,
+    loading: false, 
+    loadingDetail: false, 
     error: null,
   }),
   actions: {
@@ -50,6 +55,40 @@ export const useBookingStore = defineStore('booking', {
         if (this.error) toast.error(this.error);
       } finally {
         this.loadingDetail = false;
+      }
+    },
+    async fetchPrefilledData(idRoom: string) {
+      this.loadingDetail = true;
+      try {
+        this.prefilledData = await BookingService.getPrefilledData(idRoom);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) toast.error(e.response?.data?.message);
+      } finally {
+        this.loadingDetail = false;
+      }
+    },
+    async fetchSelectionData() {
+      this.loading = true;
+      try {
+        this.selectionData = await BookingService.getSelectionData();
+      } catch (e: unknown) {
+        if (isAxiosError(e)) toast.error(e.response?.data?.message);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async createBooking(payload: CreateBookingPayload) {
+      const router = (await import('@/router')).default;
+      this.loading = true;
+      try {
+        await BookingService.createBooking(payload);
+        toast.success("Booking created successfully!");
+        await router.push('/bookings');
+      } catch (e: unknown) {
+        const message = isAxiosError(e) ? (e.response?.data?.message || "Failed to create booking.") : "An unexpected error occurred.";
+        toast.error(message);
+      } finally {
+        this.loading = false;
       }
     },
   },

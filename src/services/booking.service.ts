@@ -1,6 +1,7 @@
 import type { Booking } from '@/interfaces/booking.interface';
 import type { CommonResponseInterface } from '@/interfaces/common.response.interface';
 import type { BookingDetail } from '@/interfaces/booking.interface';
+import type { CreateBookingPayload, PrefilledBookingData, BookingSelectionData } from '@/interfaces/booking.interface';
 import axios from 'axios';
 
 const apiClient = axios.create({
@@ -16,5 +17,17 @@ export const BookingService = {
   getBookingDetail: async (id: string): Promise<BookingDetail> => {
         const response = await apiClient.get<CommonResponseInterface<BookingDetail>>(`/api/bookings/${id}`);
         return response.data.data;
+  },
+  getPrefilledData: async (idRoom: string): Promise<PrefilledBookingData> => {
+    const response = await apiClient.get<CommonResponseInterface<PrefilledBookingData>>(`/api/bookings/create/${idRoom}`);
+    return response.data.data;
+  },
+  getSelectionData: async (): Promise<BookingSelectionData> => {
+    const response = await apiClient.get<CommonResponseInterface<BookingSelectionData>>(`/api/bookings/create`);
+    return response.data.data;
+  },
+  createBooking: async (payload: CreateBookingPayload): Promise<BookingDetail> => {
+    const response = await apiClient.post<CommonResponseInterface<BookingDetail>>('/api/bookings/create', payload);
+    return response.data.data;
   },
 };

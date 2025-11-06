@@ -58,6 +58,9 @@ onMounted(() => {
           <RouterLink to="/properties/create">
             <VButton>Add Property</VButton>
           </RouterLink>
+          <RouterLink to="/bookings/create">
+              <VButton class="bg-green-600 hover:bg-green-700">Add Booking</VButton>
+          </RouterLink>
           <VDropdown :button-text="selectedType">
             <a v-for="type in typeOptions" :key="type" @click.prevent="selectedType = type" href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">{{ type }}</a>
           </VDropdown>

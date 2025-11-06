@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { usePropertyStore } from '@/stores/property.store';
+import { useBookingStore } from '@/stores/booking.store';
 import VButton from '@/components/common/VButton.vue';
 import VConfirmationModal from '@/components/common/VConfirmationModal.vue';
 import VMaintenanceModal from '@/components/common/VMaintenanceModal.vue';
@@ -10,6 +11,7 @@ import type { RoomDetail } from '@/interfaces/property.interface';
 const route = useRoute();
 const router = useRouter();
 const propertyStore = usePropertyStore();
+const bookingStore = useBookingStore();
 
 const checkInDate = ref('');
 const checkOutDate = ref('');
@@ -29,16 +31,9 @@ const formatDate = (dateString?: string) => {
 }
 
 const formatCurrency = (value?: number) => {
-    if (value === undefined) return 'N/A';
+    if (value === undefined || value === null) return 'N/A';
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(value);
 }
-
-onMounted(() => {
-    const propertyId = route.params.id as string;
-    if (propertyId) {
-        propertyStore.fetchPropertyDetail(propertyId);
-    }
-});
 
 const showDeleteModal = ref(false);
 
@@ -57,16 +52,38 @@ const openMaintenanceModal = (room: RoomDetail) => {
     showMaintenanceModal.value = true;
 };
 
-const handleSaveMaintenance = (payload: { maintenanceStart: string, maintenanceEnd: string }) => {
+const handleSaveMaintenance = async (payload: { maintenanceStart: string, maintenanceEnd: string }) => {
     if (selectedRoom.value) {
-        propertyStore.scheduleMaintenance({
+        await bookingStore.scheduleMaintenance({
             roomId: selectedRoom.value.roomId,
             ...payload
         });
+
+        if (property.value) {
+            await propertyStore.fetchPropertyDetail(property.value.propertyId);
+        }
     }
     showMaintenanceModal.value = false;
 };
 
+const goToBooking = (roomId: string) => {
+    if (!checkInDate.value || !checkOutDate.value) {
+        alert('Please select Check-in and Check-out dates first.');
+        return;
+    }
+    router.push({ 
+        name: 'create-booking', 
+        params: { idRoom: roomId },
+        query: { checkIn: checkInDate.value, checkOut: checkOutDate.value }
+    });
+};
+
+onMounted(() => {
+    const propertyId = route.params.id as string;
+    if (propertyId) {
+        propertyStore.fetchPropertyDetail(propertyId);
+    }
+});
 </script>
 
 <template>
@@ -162,7 +179,7 @@ const handleSaveMaintenance = (payload: { maintenanceStart: string, maintenanceE
                                     </span>
                                 </td>
                                 <td class="py-2 px-3 flex gap-2">
-                                    <VButton class="text-xs py-1.5 px-4" :disabled="room.availabilityStatus !== 1">Book</VButton>
+                                    <VButton @click="goToBooking(room.roomId)" class="text-xs py-1.5 px-4" :disabled="room.availabilityStatus !== 1">Book</VButton>
                                     <VButton @click="openMaintenanceModal(room)" class="text-xs py-1 px-3 bg-yellow-500 hover:bg-yellow-600" :disabled="room.availabilityStatus !== 1">Maintenance</VButton>
                                 </td>
                             </tr>
@@ -177,10 +194,11 @@ const handleSaveMaintenance = (payload: { maintenanceStart: string, maintenanceE
         </div>
       </div>
     </div>
+    
     <VConfirmationModal 
       :show="showDeleteModal" 
       title="Delete Property?" 
-      message="This action cannot be undone."
+      message="This action will deactivate the property and all its rooms. This action cannot be undone."
       @confirm="handleDelete" 
       @cancel="showDeleteModal = false" 
     />
