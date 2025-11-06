@@ -87,3 +87,8 @@ export interface UpdateBookingForm {
     currentBooking: BookingDetail;
     selectionData: BookingSelectionData;
 }
+
+export interface ChartData {
+    propertyName: string;
+    totalIncome: number;
+}

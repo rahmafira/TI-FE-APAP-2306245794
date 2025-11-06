@@ -3,6 +3,7 @@ import type { CommonResponseInterface } from '@/interfaces/common.response.inter
 import type { BookingDetail } from '@/interfaces/booking.interface';
 import type { CreateBookingPayload, PrefilledBookingData, BookingSelectionData } from '@/interfaces/booking.interface';
 import type { UpdateBookingPayload, UpdateBookingForm } from '@/interfaces/booking.interface';
+import type { ChartData } from '@/interfaces/booking.interface';
 import axios from 'axios';
 
 const apiClient = axios.create({
@@ -47,5 +48,9 @@ export const BookingService = {
     },
     processRefund: async (bookingId: string): Promise<void> => {
         await apiClient.post('/api/bookings/status/refund', { bookingId });
+    },
+    getChartData: async (month: number, year: number): Promise<ChartData[]> => {
+        const response = await apiClient.get<CommonResponseInterface<ChartData[]>>(`/api/bookings/chart?month=${month}&year=${year}`);
+        return response.data.data;
     },
 };

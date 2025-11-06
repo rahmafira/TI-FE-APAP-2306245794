@@ -13,7 +13,7 @@ import { RouterLink } from 'vue-router';
       <RouterLink to="/bookings" class="text-slate-700 font-medium transition-colors duration-200 hover:text-blue-600" active-class="text-blue-600 font-semibold">
         Bookings
       </RouterLink>
-      <RouterLink to="/statistic" class="text-slate-700 font-medium transition-colors duration-200 hover:text-blue-600" active-class="text-blue-600 font-semibold">
+      <RouterLink to="/statistics" class="text-slate-700 font-medium transition-colors duration-200 hover:text-blue-600" active-class="text-blue-600 font-semibold">
         Statistic
       </RouterLink>
     </div>
