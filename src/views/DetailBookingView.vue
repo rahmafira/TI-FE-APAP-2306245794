@@ -1,14 +1,49 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { onMounted, computed, reactive } from 'vue';
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import { useBookingStore } from '@/stores/booking.store';
 import VButton from '@/components/common/VButton.vue';
+import VConfirmationModal from '@/components/common/VConfirmationModal.vue';
 
 const route = useRoute();
 const router = useRouter();
 const bookingStore = useBookingStore();
 
 const booking = computed(() => bookingStore.currentBooking);
+
+const modalState = reactive({
+    show: false,
+    title: '',
+    message: '',
+    action: () => {}
+});
+
+const openModal = (type: 'pay' | 'cancel' | 'refund') => {
+    if (!booking.value) return;
+    switch(type) {
+        case 'pay':
+            modalState.title = 'Confirm Payment?';
+            modalState.message = `Are you sure you want to confirm payment for this booking?`;
+            modalState.action = () => bookingStore.confirmPayment(booking.value!.bookingId);
+            break;
+        case 'cancel':
+            modalState.title = 'Cancel Booking?';
+            modalState.message = 'This action cannot be undone.';
+            modalState.action = () => bookingStore.cancelBooking(booking.value!.bookingId);
+            break;
+        case 'refund':
+            modalState.title = 'Process Refund?';
+            modalState.message = `Refund amount: ${formatCurrency(booking.value.refund)}`;
+            modalState.action = () => bookingStore.processRefund(booking.value!.bookingId);
+            break;
+    }
+    modalState.show = true;
+};
+
+const handleConfirm = () => {
+    modalState.action();
+    modalState.show = false;
+};
 
 const statusMap: Record<number, { text: string; color: string }> = {
     0: { text: 'Waiting for Payment', color: 'bg-yellow-100 text-yellow-800' },
@@ -47,6 +82,7 @@ onMounted(() => {
     <div class="container mx-auto">
       <div v-if="bookingStore.loadingDetail" class="text-center">Loading booking details...</div>
       <div v-else-if="bookingStore.error" class="text-center text-red-500">{{ bookingStore.error }}</div>
+      
       <div v-else-if="booking" class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
         <div class="flex justify-between items-start border-b border-gray-200 pb-4">
             <div>
@@ -56,14 +92,15 @@ onMounted(() => {
                 </span>
             </div>
             <div class="flex gap-2">
-                <VButton v-if="canPay" class="bg-green-600 hover:bg-green-700">Pay</VButton>
+                <VButton v-if="canPay" @click="openModal('pay')" class="bg-green-600 hover:bg-green-700">Pay</VButton>
                 <RouterLink v-if="canUpdate" :to="`/bookings/update/${booking.bookingId}`">
                     <VButton class="bg-yellow-500 hover:bg-yellow-600">Update</VButton>
                 </RouterLink>
-                <VButton v-if="canRefund" class="bg-blue-600 hover:bg-blue-700">Refund</VButton>
-                <VButton v-if="canCancel" class="bg-red-600 hover:bg-red-700">Cancel</VButton>
+                <VButton v-if="canRefund" @click="openModal('refund')" class="bg-blue-600 hover:bg-blue-700">Refund</VButton>
+                <VButton v-if="canCancel" @click="openModal('cancel')" class="bg-red-600 hover:bg-red-700">Cancel</VButton>
             </div>
         </div>
+        
         <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6 text-sm">
             <div class="space-y-4">
                 <div><p class="text-xs text-gray-500">Property Name</p><p class="font-semibold">{{ booking.propertyName }}</p></div>
@@ -72,10 +109,12 @@ onMounted(() => {
                 <div><p class="text-xs text-gray-500">Check-In</p><p class="font-semibold">{{ formatDate(booking.checkInDate) }}</p></div>
                 <div><p class="text-xs text-gray-500">Total Days</p><p class="font-semibold">{{ booking.totalDays }}</p></div>
                 <div><p class="text-xs text-gray-500">Breakfast</p><p class="font-semibold">{{ booking.isBreakfast ? 'Included' : 'Not Included' }}</p></div>
+                
                 <div v-if="booking.refund > 0 || booking.status === 3">
                     <p class="text-xs text-gray-500">Refund</p>
                     <p class="font-semibold text-green-600">{{ formatCurrency(booking.refund) }}</p>
                 </div>
+
                 <div><p class="text-xs text-gray-500">Updated Date</p><p class="font-semibold">{{ formatDate(booking.updatedAt) }}</p></div>
             </div>
             <div class="space-y-4">
@@ -100,5 +139,13 @@ onMounted(() => {
         </div>
       </div>
     </div>
+    
+    <VConfirmationModal 
+      :show="modalState.show" 
+      :title="modalState.title" 
+      :message="modalState.message"
+      @confirm="handleConfirm" 
+      @cancel="modalState.show = false" 
+    />
   </main>
 </template>

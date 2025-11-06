@@ -130,5 +130,61 @@ export const useBookingStore = defineStore('booking', {
         this.loading = false;
       }
     },
+    async confirmPayment(bookingId: string) {
+      this.loading = true; // Opsional: tampilkan loading spinner
+      this.error = null;
+      try {
+        await BookingService.confirmPayment(bookingId);
+        toast.success("Payment confirmed!");
+        await this.fetchBookingDetail(bookingId);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+          this.error = e.response?.data?.message || 'Failed to confirm payment.';
+        } else {
+          this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loading = false; 
+      }
+    },
+
+    async cancelBooking(bookingId: string) {
+      this.loading = true;
+      this.error = null;
+      try {
+        await BookingService.cancelBooking(bookingId);
+        toast.success("Booking cancelled!");
+        await this.fetchBookingDetail(bookingId);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+          this.error = e.response?.data?.message || 'Failed to cancel booking.';
+        } else {
+          this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async processRefund(bookingId: string) {
+      this.loading = true;
+      this.error = null;
+      try {
+        await BookingService.processRefund(bookingId);
+        toast.success("Refund processed!");
+        await this.fetchBookingDetail(bookingId);
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+          this.error = e.response?.data?.message || 'Failed to process refund.';
+        } else {
+          this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
   },
 });

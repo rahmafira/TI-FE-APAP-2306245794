@@ -39,4 +39,13 @@ export const BookingService = {
         const response = await apiClient.put<CommonResponseInterface<Booking>>('/api/bookings/update', payload);
         return response.data.data;
     },
+    confirmPayment: async (bookingId: string): Promise<void> => {
+        await apiClient.post('/api/bookings/status/pay', { bookingId });
+    },
+    cancelBooking: async (bookingId: string): Promise<void> => {
+        await apiClient.post('/api/bookings/status/cancel', { bookingId });
+    },
+    processRefund: async (bookingId: string): Promise<void> => {
+        await apiClient.post('/api/bookings/status/refund', { bookingId });
+    },
 };
