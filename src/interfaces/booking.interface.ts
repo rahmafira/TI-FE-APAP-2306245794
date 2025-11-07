@@ -92,3 +92,9 @@ export interface ChartData {
     propertyName: string;
     totalIncome: number;
 }
+
+export interface ScheduleMaintenancePayload {
+    roomId: string;
+    maintenanceStart: string; 
+    maintenanceEnd: string; 
+}

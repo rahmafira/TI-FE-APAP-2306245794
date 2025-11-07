@@ -1,4 +1,4 @@
-import type { ScheduleMaintenancePayload } from '@/interfaces/property.interface';
+import type { ScheduleMaintenancePayload } from '@/interfaces/booking.interface';
 import axios from 'axios';
 
 const apiClient = axios.create({

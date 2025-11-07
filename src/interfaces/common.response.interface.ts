@@ -4,3 +4,9 @@ export interface CommonResponseInterface<T> {
   status: number;
   timestamp: Date;
 }
+
+export interface ScheduleMaintenancePayload {
+    roomId: string;
+    maintenanceStart: string; 
+    maintenanceEnd: string; 
+}

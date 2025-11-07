@@ -76,9 +76,3 @@ export interface PropertyHeader {
     propertyName: string;
     type: number;
 }
-
-export interface ScheduleMaintenancePayload {
-    roomId: string;
-    maintenanceStart: string; 
-    maintenanceEnd: string; 
-}

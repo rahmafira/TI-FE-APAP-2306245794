@@ -4,6 +4,8 @@ import type { Booking } from '@/interfaces/booking.interface';
 import type { BookingDetail } from '@/interfaces/booking.interface';
 import type { CreateBookingPayload, PrefilledBookingData, BookingSelectionData } from '@/interfaces/booking.interface';
 import type { UpdateBookingPayload, UpdateBookingForm } from '@/interfaces/booking.interface';
+import { RoomService } from '@/services/room.service'; 
+import type { ScheduleMaintenancePayload } from '@/interfaces/booking.interface';
 import { toast } from 'vue-sonner';
 import { isAxiosError } from 'axios';
 
@@ -131,7 +133,7 @@ export const useBookingStore = defineStore('booking', {
       }
     },
     async confirmPayment(bookingId: string) {
-      this.loading = true; // Opsional: tampilkan loading spinner
+      this.loading = true; 
       this.error = null;
       try {
         await BookingService.confirmPayment(bookingId);
@@ -178,6 +180,23 @@ export const useBookingStore = defineStore('booking', {
       } catch (e: unknown) {
         if (isAxiosError(e)) {
           this.error = e.response?.data?.message || 'Failed to process refund.';
+        } else {
+          this.error = 'An unexpected error occurred.';
+        }
+        if (this.error) toast.error(this.error);
+      } finally {
+        this.loading = false;
+      }
+    },
+    async scheduleMaintenance(payload: ScheduleMaintenancePayload) {
+      this.loading = true; 
+      this.error = null;
+      try {
+        await RoomService.scheduleMaintenance(payload);
+        toast.success("Maintenance schedule added successfully!");
+      } catch (e: unknown) {
+        if (isAxiosError(e)) {
+          this.error = e.response?.data?.message || 'Failed to add maintenance schedule.';
         } else {
           this.error = 'An unexpected error occurred.';
         }

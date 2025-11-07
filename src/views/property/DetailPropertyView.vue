@@ -58,7 +58,6 @@ const handleSaveMaintenance = async (payload: { maintenanceStart: string, mainte
             roomId: selectedRoom.value.roomId,
             ...payload
         });
-
         if (property.value) {
             await propertyStore.fetchPropertyDetail(property.value.propertyId);
         }
