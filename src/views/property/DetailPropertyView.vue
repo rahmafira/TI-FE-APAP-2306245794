@@ -70,8 +70,8 @@ const goToBooking = (roomId: string) => {
         alert('Please select Check-in and Check-out dates first.');
         return;
     }
-    router.push({ 
-        name: 'create-booking', 
+    router.push({
+        name: 'create-booking',
         params: { idRoom: roomId },
         query: { checkIn: checkInDate.value, checkOut: checkOutDate.value }
     });
@@ -115,6 +115,10 @@ onMounted(() => {
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
                 <div>
                     <p class="text-2xl font-bold">{{ property.propertyName }}</p>
+                    <div class="mt-4 text-sm">
+                        <p class="text-xs text-gray-500">Description</p>
+                        <p class="font-semibold">{{ property.description }}</p>
+                    </div>
                     <div class="mt-4 space-y-3 text-sm">
                         <div><p class="text-xs text-gray-500">Income</p><p class="font-semibold">{{ formatCurrency(property.income) }}</p></div>
                         <div><p class="text-xs text-gray-500">Type</p><p class="font-semibold">{{ getPropertyType(property.type) }}</p></div>
@@ -197,7 +201,7 @@ onMounted(() => {
     <VConfirmationModal 
       :show="showDeleteModal" 
       title="Delete Property?" 
-      message="This action will deactivate the property and all its rooms. This action cannot be undone."
+      message="This action cannot be undone."
       @confirm="handleDelete" 
       @cancel="showDeleteModal = false" 
     />
