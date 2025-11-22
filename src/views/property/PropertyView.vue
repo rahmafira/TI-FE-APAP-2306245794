@@ -33,7 +33,8 @@ const getPropertyType = (type: number): string => {
 };
 
 const filteredProperties = computed(() => {
-    return propertyStore.properties.filter((property: Property) => {
+    const properties = propertyStore.properties || [];
+    return properties.filter((property: Property) => {
         const typeAsString = getPropertyType(property.type);
         const statusAsString = property.activeStatus === 1 ? 'Active' : 'Non-Active';
 
