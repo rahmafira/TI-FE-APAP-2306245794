@@ -75,22 +75,23 @@ onMounted(() => {
 
       <div v-if="propertyStore.loading" class="text-center py-10 text-gray-500">Loading Properties...</div>
       <div v-else-if="propertyStore.error" class="text-center py-10 text-red-500">{{ propertyStore.error }}</div>
+      
       <VDataTable v-else :headers="headers" :items="filteredProperties">
         <template #item.type="{ item }">
-            <span>{{ getPropertyType(item.type) }}</span>
+            <span>{{ getPropertyType((item as any).type) }}</span>
         </template>
         
         <template #item.activeStatus="{ item }">
             <span :class="[
-                item.activeStatus === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
+                (item as any).activeStatus === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
                 'px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full'
             ]">
-                {{ item.activeStatus === 1 ? 'Active' : 'Non-Active' }}
+                {{ (item as any).activeStatus === 1 ? 'Active' : 'Non-Active' }}
             </span>
         </template>
 
         <template v-slot:item.action="{ item }">
-            <RouterLink :to="`/properties/${item.propertyId}`">
+            <RouterLink :to="`/properties/${(item as any).propertyId}`">
                 <VButton class="py-1.5 px-4 text-sm">Detail</VButton>
             </RouterLink>
         </template>
