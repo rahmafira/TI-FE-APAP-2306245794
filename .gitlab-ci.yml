@@ -12,6 +12,7 @@ build:
   image: node:20
   script:
     - npm ci
+    - echo "VITE_API_URL=http://2306245794-be.hafizmuh.site" > .env
     - npm run build
   artifacts:
     paths:
