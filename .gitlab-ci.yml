@@ -54,3 +54,5 @@ deploy:
     - ssh $EC2_USER@$EC2_HOST "sudo KUBECONFIG=/etc/rancher/k3s/k3s.yaml kubectl apply -f ~/app/k8s/ingress.yaml"
   only:
     - feat/praktikum-9
+
+# ini kalau pake github
