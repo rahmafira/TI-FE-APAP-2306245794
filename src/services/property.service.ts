@@ -7,7 +7,7 @@ import type { PropertyHeader, CreateRoomTypePayload } from '@/interfaces/propert
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: 'http://2306245794-be.hafizmuh.site',
   headers: {
     'Content-Type': 'application/json',
   },
